@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Depositar BTC - Bot de Telegram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1f2a44 0%, #2a3b5f 100%);
+      color: #ffffff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .header {
+      background: rgba(38, 54, 82, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .back-button {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: transform 0.3s ease;
+    }
+    .back-button:hover {
+      transform: translateX(-5px);
+    }
+    .header-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0088cc;
+      text-shadow: 0 0 10px rgba(0,136,204,0.3);
+    }
+    .header-icons {
+      display: flex;
+      gap: 1rem;
+      color: #0088cc;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 1rem;
+      position: relative;
+    }
+    .qr-container {
+      text-align: center;
+      margin: 2rem 0;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: transform 0.3s ease;
+    }
+    .qr-container:hover {
+      transform: translateY(-5px);
+    }
+    .qr-code {
+      width: 250px;
+      height: 250px;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0,136,204,0.3);
+    }
+    .network-info, .address-container, .plan-info {
+      background: rgba(38, 54, 82, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+    }
+    .network-info:hover, .address-container:hover, .plan-info:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,136,204,0.2);
+    }
+    .network-label, .address-label {
+      color: #a0bcd1;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .network-name {
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #0088cc;
+    }
+    .address-value {
+      font-family: monospace;
+      word-break: break-all;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #00bcd4;
+      background: rgba(0,0,0,0.2);
+      padding: 0.8rem;
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    .copy-button {
+      background: none;
+      border: none;
+      color: #0088cc;
+      cursor: pointer;
+      padding: 0.5rem;
+      transition: all 0.3s ease;
+    }
+    .copy-button:hover {
+      transform: scale(1.1);
+      color: #00bcd4;
+    }
+    .plan-info {
+      text-align: center;
+      font-weight: 600;
+      color: #00bcd4;
+      font-size: 1.2rem;
+      background: linear-gradient(45deg, rgba(38, 54, 82, 0.8), rgba(38, 54, 82, 0.6));
+    }
+    .timer {
+      text-align: center;
+      color: #ff6b6b;
+      font-weight: 600;
+      margin: 1rem 0;
+      font-size: 1.5rem;
+      text-shadow: 0 0 10px rgba(255,107,107,0.3);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    .warning {
+      color: #ffd700;
+      background: rgba(38, 54, 82, 0.8);
+      backdrop-filter: blur(10px);
+      padding: 1rem;
+      border-radius: 1rem;
+      margin: 1rem 0;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,215,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .warning i {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+    .floating {
+      animation: floating 3s ease-in-out infinite;
+    }
+    @keyframes floating {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+    .money-rain {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.1;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2300bcd4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm.31-8.86c-1.77-.45-2.34-.94-2.34-1.67 0-.84.79-1.43 2.1-1.43 1.38 0 1.9.66 1.94 1.64h1.71c-.05-1.34-.87-2.57-2.49-2.97V5H10.9v1.69c-1.51.32-2.72 1.3-2.72 2.81 0 1.79 1.49 2.69 3.66 3.21 1.95.46 2.34 1.15 2.34 1.87 0 .53-.39 1.39-2.1 1.39-1.6 0-2.23-.72-2.32-1.64H8.04c.1 1.7 1.36 2.66 2.86 2.97V19h2.34v-1.67c1.52-.29 2.72-1.16 2.73-2.77-.01-2.2-1.9-2.96-3.66-3.42z"/></svg>') repeat;
+      animation: moneyRain 20s linear infinite;
+    }
+    @keyframes moneyRain {
+      0% { background-position: 0 0; }
+      100% { background-position: 100% 100%; }
+    }
+    .bitcoin-icon {
+      font-size: 4rem;
+      color: #f7931a;
+      margin: 2rem 0;
+      text-shadow: 0 0 20px rgba(247, 147, 26, 0.5);
+      animation: rotateBitcoin 10s linear infinite;
+      text-align: center;
+      display: block;
+      width: 100%;
+    }
+    @keyframes rotateBitcoin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @media (max-width: 1200px) {
+      .container {
+        max-width: 960px;
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .container {
+        max-width: 720px;
+      }
+      .qr-code {
+        width: 220px;
+        height: 220px;
+      }
+      .bitcoin-icon {
+        font-size: 3.5rem;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        max-width: 540px;
+        padding: 1rem;
+      }
+      .header-title {
+        font-size: 1.1rem;
+      }
+      .qr-container {
+        margin: 1.5rem 0;
+        padding: 1.5rem;
+      }
+      .qr-code {
+        width: 200px;
+        height: 200px;
+      }
+      .bitcoin-icon {
+        font-size: 3rem;
+        margin: 1.5rem 0;
+      }
+      .network-info, .address-container, .plan-info {
+        padding: 1.2rem;
+      }
+      .timer {
+        font-size: 1.3rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        padding: 0.8rem;
+      }
+      .header {
+        padding: 0.8rem;
+      }
+      .qr-container {
+        margin: 1rem 0;
+        padding: 1rem;
+      }
+      .qr-code {
+        width: 180px;
+        height: 180px;
+      }
+      .bitcoin-icon {
+        font-size: 2.5rem;
+        margin: 1rem 0;
+      }
+      .address-value {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+      }
+      .warning {
+        font-size: 0.8rem;
+        padding: 0.8rem;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .qr-code {
+        width: 150px;
+        height: 150px;
+      }
+      .bitcoin-icon {
+        font-size: 2rem;
+      }
+      .timer {
+        font-size: 1.1rem;
+      }
+    }
+
+    @media (hover: none) {
+      .back-button:hover {
+        transform: none;
+      }
+      .qr-container:hover {
+        transform: none;
+      }
+      .network-info:hover, .address-container:hover, .plan-info:hover {
+        transform: none;
+        box-shadow: none;
+      }
+      .copy-button:hover {
+        transform: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating, .money-rain, .pulse, .bitcoin-icon {
+        animation: none;
+      }
+    }
+
+    /* Estilos para el botón de Telegram */
+    .telegram-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      background: linear-gradient(45deg, #0088cc, #00bcd4);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 1.5rem 0;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,136,204,0.3);
+      animation: pulse 2s infinite;
+    }
+
+    .telegram-button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(0,136,204,0.4);
+    }
+
+    .telegram-button i {
+      font-size: 1.4rem;
+    }
+
+    @media (max-width: 768px) {
+      .telegram-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="money-rain"></div>
+  <header class="header">
+    <a href="checkout.html" class="back-button">
+      <i class="fas fa-arrow-left"></i>
+    </a>
+    <div class="header-title floating">Depositar BTC</div>
+    <div class="header-icons">
+      <i class="fas fa-qrcode"></i>
+      <i class="fas fa-share-alt"></i>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="qr-container floating">
+      <img src="bitcoin.jpg" alt="QR Code" class="qr-code">
+    </div>
+
+    <div style="text-align: center;">
+      <i class="fab fa-bitcoin bitcoin-icon"></i>
+    </div>
+
+    <div class="plan-info floating" id="planInfo">
+      Plan: Software Completo - Monto a pagar: $100
+    </div>
+
+    <div class="network-info">
+      <div class="network-label">Red</div>
+      <div class="network-name">
+        BNB Smart Chain (BEP20)
+        <i class="fas fa-exchange-alt"></i>
+      </div>
+    </div>
+
+    <div class="address-container">
+      <div class="address-label">Dirección de depósito</div>
+      <div class="address-value">
+        0xd1ff0ef2d61016ffee1fdab10cbff5968901615f
+        <button class="copy-button" onclick="copyAddress()">
+          <i class="far fa-copy"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="timer floating" id="timer">Tiempo restante: 1:00:00</div>
+
+    <a href="https://t.me/ProgramadorMillonary" target="_blank" class="telegram-button">
+      <i class="fab fa-telegram"></i>
+      Enviar Captura de Pago por Telegram
+    </a>
+
+    <div class="warning">
+      <i class="fas fa-exclamation-triangle"></i> 
+      Importante: Asegúrate de enviar la cantidad exacta y desde una billetera que soporte la red BNB Smart Chain (BEP20).
+    </div>
+  </div>
+
+  <script>
+    // Obtener el plan seleccionado de la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const plan = urlParams.get('plan');
+    
+    const planDetails = {
+      software: {
+        name: 'Software Completo',
+        price: 100
+      },
+      '1k': {
+        name: '1,000 Miembros',
+        price: 200
+      },
+      '5k': {
+        name: '5,000 Miembros',
+        price: 800
+      }
+    };
+
+    // Actualizar la información del plan
+    if (plan && planDetails[plan]) {
+      const details = planDetails[plan];
+      document.getElementById('planInfo').textContent = `Plan: ${details.name} - Monto a pagar: $${details.price}`;
+    } else {
+      window.location.href = 'precios.html';
+    }
+
+    // Función para copiar la dirección
+    function copyAddress() {
+      const address = '0xd1ff0ef2d61016ffee1fdab10cbff5968901615f';
+      navigator.clipboard.writeText(address).then(() => {
+        alert('Dirección copiada al portapapeles');
+      });
+    }
+
+    // Timer de 1 hora
+    let timeLeft = 60 * 60; // 1 hora en segundos
+    const timerElement = document.getElementById('timer');
+
+    const timer = setInterval(() => {
+      const hours = Math.floor(timeLeft / 3600);
+      const minutes = Math.floor((timeLeft % 3600) / 60);
+      const seconds = timeLeft % 60;
+      timerElement.textContent = `Tiempo restante: ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        timerElement.textContent = 'Tiempo expirado';
+      }
+      
+      timeLeft--;
+    }, 1000);
+  </script>
+</body>
+</html> 

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>¡Gracias por tu Compra! - Bot de Telegram</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #1f2a44 0%, #2a3b5f 100%);
+      color: #ffffff;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      text-align: center;
+    }
+    .success-icon {
+      font-size: 4rem;
+      color: #00bcd4;
+      margin-bottom: 2rem;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-20px); }
+    }
+    .headline {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(45deg, #0088cc, #00bcd4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subheadline {
+      font-size: 1.2rem;
+      color: #a0bcd1;
+      margin-bottom: 3rem;
+    }
+    .next-steps {
+      background: rgba(38, 54, 82, 0.8);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .step {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+    .step:last-child {
+      margin-bottom: 0;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: #0088cc;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    .step-content {
+      flex-grow: 1;
+    }
+    .step-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #0088cc;
+    }
+    .step-text {
+      color: #d1d9e6;
+    }
+    .cta {
+      display: inline-block;
+      background: linear-gradient(45deg, #0088cc, #00bcd4);
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin-top: 2rem;
+    }
+    .cta:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(0,136,204,0.3);
+    }
+    .support-info {
+      margin-top: 3rem;
+      color: #a0bcd1;
+    }
+    .support-info a {
+      color: #0088cc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .support-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon">🎉</div>
+    <h1 class="headline">¡Gracias por tu Compra!</h1>
+    <p class="subheadline">Tu cuenta ha sido activada exitosamente. Estamos emocionados de tenerte con nosotros.</p>
+
+    <div class="next-steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <div class="step-title">Revisa tu Email</div>
+          <div class="step-text">Hemos enviado las credenciales de acceso y la documentación a tu correo electrónico.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <div class="step-title">Configura tu Bot</div>
+          <div class="step-text">Sigue la guía de configuración paso a paso para comenzar a usar tu bot.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <div class="step-title">Únete a nuestro Grupo</div>
+          <div class="step-text">Accede a nuestro grupo de soporte para recibir ayuda y actualizaciones.</div>
+        </div>
+      </div>
+    </div>
+
+    <a class="cta" href="https://t.me/tu_grupo_soporte">Unirme al Grupo de Soporte</a>
+
+    <div class="support-info">
+      <p>¿Necesitas ayuda? Nuestro equipo de soporte está disponible 24/7</p>
+      <p>Contáctanos en <a href="https://t.me/tu_soporte">@tu_soporte</a></p>
+    </div>
+  </div>
+</body>
+</html> 
